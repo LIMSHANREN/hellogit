@@ -6,15 +6,15 @@ int factorial(int num);
 
 int main(){
     int x=4;
-    cout << "\n Factorial of " << x << factorial(x);
+    cout << "\n Factorial of " << x << "= " << factorial(x);
 
     return 0;
 }
 
 int factorial(int num){
-    int result=0;
+    int result=1;
 
-    for(num;num>1;num--){
+    for(;num>1;num--){
         result*=num;
     }
     return result;

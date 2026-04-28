@@ -22,7 +22,7 @@ void drawBox(int w){
         for(int i = 0; i < w-2; i++) {
             drawEmptyLine(w);
         }
-        drawFullLine(w);
+        if(w>1) drawFullLine(w);
 } 
 
 

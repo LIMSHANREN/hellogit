@@ -1,43 +1,31 @@
 #include <iostream>
 using namespace std;
-void drawBox(int w);
-void drawFullLine(int w);
-void drawEmptyLine(int w);
+void getMinMax(int* p_array,int size, int &a_min,int &a_max);
+void showArray(int* p_array,int size);
 
 int main() {
-    int width;
-    while(true){
-        cout << "\n Enter the side of the square box (1-16): ";
-        if(!(cin >> width) || width < 1 || width > 16) {
-            cout << "Ending program. Only integer values between 1 and 16 accepted." << endl;
-            break;
-        }
-        drawBox(width);
-    }
+    int myArray[]={3,8,11,2};
+    int min=myArray[0],max=myArray[0];
+    int numItem=sizeof(myArray)/sizeof(int);
+    showArray(myArray,numItem);
+    getMinMax(myArray,numItem,min,max);
+    cout << "\n The maximum = " << max;
+    cout << "\n The minimum = " << min;
     return 0;
 }
 
-void drawBox(int w){
-        drawFullLine(w);
-        for(int i = 0; i < w-2; i++) {
-            drawEmptyLine(w);
-        }
-        if(w>1) drawFullLine(w);
-} 
-
-
-void drawFullLine(int w){
-    for(int i = 0; i < w; i++){
-        cout << "* ";
+void getMinMax(int* p_array,int size, int &a_min,int &a_max){
+    if (size <=0) return;
+    for(int i=1;i<size;i++){
+        if(p_array[i]>a_max) a_max=p_array[i];
+        if(p_array[i]<a_min) a_min=p_array[i];
     }
-    cout << endl;
 }
 
-void drawEmptyLine(int w){
-    cout << "* ";
-    for (int i = 0; i < w-2; i++){
-        cout << "  ";
+void showArray(int*p_array,int size){
+    cout << "Value of array" << endl;
+    for(int i=0; i<size; i++){
+        cout << p_array[i] << "     ";
     }
-    if(w > 1) cout << "*";
-    cout << endl; 
+    cout << endl;
 }

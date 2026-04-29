@@ -1,24 +1,25 @@
 #include <iostream>
+#include <ctime>
 
 using namespace std;
 
-void swap(int* num1,int* num2);
+void sumAverage(float *pArray,int size, float &a_sum, float &a_average);
 
 
 int main() {
-    int x=2,y=4;
-    cout << "\n x = " << x;
-    cout << "\n y = " << y;
-    swap(x,y);
-    cout << "\n\n After swapping " << endl;
-    cout << "\n x = " << x;
-    cout << "\n y = " << y;
+    float sum = 0.0, average = 0.0;
+    float arrayNum[4] = {1.0,2.0,3.0,4.0};
+    int numElem = sizeof(arrayNum)/sizeof(float);
+    sumAverage(arrayNum, numElem, sum, average);
+    cout << "\n sum = " << sum << " average = " << average << endl;
 
-    return 0;
+    return 1;
 }
 
-void swap(int* num1, int* num2){
-    int temp = *num1;
-    *num1 = *num2;
-    *num2 = temp;
+void sumAverage(float *pArray,int size, float &a_sum, float &a_average){
+    for(int i=0; i<size; i++){
+        a_sum += pArray[i];
+    }
+    a_average = a_sum/size;
 }
+

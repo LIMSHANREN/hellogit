@@ -20,16 +20,18 @@ int main() {
 }
 
 void displayVector(float* pArray, int size){
-    cout << "Display data in array" << endl;
+    cout << "\nNumber of elements in array = " << size << endl;
+    cout << "\nDisplay data in array" << endl;
     for(int i = 0; i < size; i++){
         cout << pArray[i] << " ";
     }
+    cout << endl;
 }
 
 void getInputIntoVector(float* pArray, int size ){
     for(int i = 0; i < size; i++){
-        cout << "Enter element A[ " << i << " ]" << endl;
-        cin >> pArray[i];
+        cout << "\nEnter element A[" << i << "]" << " = ";
+        cin >> pArray[i] ;
 
     }
 }

@@ -1,86 +1,55 @@
 #include <iostream>
-#include <string>
 #include <iomanip>
 
 using namespace std;
 
-class Purchase {
+class Temperature {
 private:
-    int qty; 
-    float price;
-    string itemName;
-    float total;
+    char unit;
+    float degree;
 
 public:
-    Purchase(string name, int quantity, float p);
-    
-    void set_data(string name, int quantity, float p);
-    void calculate(float&grandPrice);
-    void print();
+    Temperature(char u, float d) {
+        unit = u;
+        degree = d;
+    }
+
+    float getCels() {
+        if (unit == 'C' || unit == 'c') {
+            return degree;
+        } else {
+            return (degree - 32) * 5.0 / 9.0;
+        }
+    }
+
+    float getFar() {
+        if (unit == 'F' || unit == 'f') {
+            return degree;
+        } else {
+            return (degree * 9.0 / 5.0) + 32;
+        }
+    }
+
+    void equal(Temperature t) {
+        this->unit = t.unit;
+        this->degree = t.degree;
+    }
 };
 
-
-Purchase::Purchase(string name, int quantity, float p) {
-    set_data(name, quantity, p);
-}
-
-void Purchase::set_data(string name, int quantity, float p) {
-    itemName = name;
-    qty = quantity;
-    price = p;
-    total = 0.0;
-}
-
-void Purchase::calculate(float &grandPrice) {
-    total = qty * price;
-    grandPrice += total;
-}
-
-void Purchase::print() {
-    cout << "---------------------------------\n" << 
-         left << setw(15) << "Item" << ": " << itemName << "\n" <<
-         left << setw(15) << "Subtotal" << ": RM" << fixed << setprecision(2) << total << "\n" <<
-         "---------------------------------\n" << endl;
-}
-
 int main() {
-    string name;
-    int quantity;
-    float price;
-    int grandQty = 0; 
-    float grandPrice = 0.0;
+    Temperature t1('C', 100), t2('F', 100);
 
-    Purchase p1("None", 0, 0.0);
+    cout << fixed << setprecision(4); 
+    cout << "t1 = " << t1.getCels() << " C" << endl;
+    cout << "t1 = " << t1.getFar() << " F" << endl;
+    cout << "t2 = " << t2.getCels() << " C" << endl;
+    cout << "t2 = " << t2.getFar() << " F" << endl;
 
-    cout << "Welcome to the Purchase System (Enter 'q' to quit)" << endl;
-    
-    while(true){
-        cout << left << setw(15) << "Enter item name" << ": ";
-        cin >> name;
-        if(name == "q" || name == "Q") break;
+    t1.equal(t2);
 
-        cout << left << setw(15) << "Enter quantity" << ": ";
-        cin >> quantity;
-        cout << left << setw(15) << "Enter price" << ": RM";
-        cin >> price;
+    cout << "After assigning t2 to t1" << endl;
+    cout << "t1 = " << t1.getCels() << " C" << endl;
+    cout << "t1 = " << t1.getFar() << " F" << endl;
 
-        if(price < 0 || quantity < 0){
-            cout << "Invalid input! Try again." << endl;
-            continue;
-        }
-
-        p1.set_data(name, quantity, price);
-        p1.calculate(grandPrice);
-        p1.print();
-        grandQty += quantity;
-    } 
-    cout << "==================================" << endl;
-    cout << "            GRAND TOTAL           " << endl;
-    cout << "==================================" << endl;
-    cout << left << setw(15) << "Total Items" << ": " << grandQty << endl;
-    cout << left << setw(15) << "Total Amount" << ": RM" << fixed << setprecision(2) << grandPrice << endl;
-    cout << "==================================" << endl;
-
-    cout << "Exiting system. Thank you!" << endl;
-    return 0; 
+    return 0;
 }

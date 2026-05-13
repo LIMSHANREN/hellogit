@@ -1,55 +1,53 @@
 #include <iostream>
-#include <iomanip>
 
 using namespace std;
 
-class Temperature {
+class Fraction {
 private:
-    char unit;
-    float degree;
+    int numerator;
+    int denominator;
 
 public:
-    Temperature(char u, float d) {
-        unit = u;
-        degree = d;
+    Fraction(int n = 0, int d = 1) {
+        numerator = n;
+        denominator = d;
     }
 
-    float getCels() {
-        if (unit == 'C' || unit == 'c') {
-            return degree;
-        } else {
-            return (degree - 32) * 5.0 / 9.0;
-        }
+    Fraction add(Fraction f) {
+        int newNum = (numerator * f.denominator) + (f.numerator * denominator);
+        int newDen = denominator * f.denominator;
+        return Fraction(newNum, newDen);
     }
 
-    float getFar() {
-        if (unit == 'F' || unit == 'f') {
-            return degree;
-        } else {
-            return (degree * 9.0 / 5.0) + 32;
-        }
+    Fraction multiply(Fraction f) {
+        int newNum = numerator * f.numerator;
+        int newDen = denominator * f.denominator;
+        return Fraction(newNum, newDen);
     }
 
-    void equal(Temperature t) {
-        this->unit = t.unit;
-        this->degree = t.degree;
+    void display() {
+        cout << numerator << "/" << denominator << endl;
     }
 };
 
 int main() {
-    Temperature t1('C', 100), t2('F', 100);
+    Fraction f1(3, 4);
+    Fraction f2(1, 2);
+    Fraction result;
 
-    cout << fixed << setprecision(4); 
-    cout << "t1 = " << t1.getCels() << " C" << endl;
-    cout << "t1 = " << t1.getFar() << " F" << endl;
-    cout << "t2 = " << t2.getCels() << " C" << endl;
-    cout << "t2 = " << t2.getFar() << " F" << endl;
+    cout << "f1: ";
+    f1.display();
 
-    t1.equal(t2);
+    cout << "f2: ";
+    f2.display();
 
-    cout << "After assigning t2 to t1" << endl;
-    cout << "t1 = " << t1.getCels() << " C" << endl;
-    cout << "t1 = " << t1.getFar() << " F" << endl;
+    cout << "f1 + f2: ";
+    result = f1.add(f2);
+    result.display(); 
+
+    cout << "f1 * f2: ";
+    result = f1.multiply(f2);
+    result.display();
 
     return 0;
 }

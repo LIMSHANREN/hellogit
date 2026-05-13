@@ -17,12 +17,12 @@ public:
             balance -= amount;
         }
     }
-    double GetBalance() {
+    double GetBalance()const {
         return balance;
     }
 };
 
-void PrintBalance(BankAccount account);
+void PrintBalance(const BankAccount account);
 
 int main(){
     BankAccount account;
@@ -36,6 +36,6 @@ int main(){
     return 0;
 }
 
-void PrintBalance(BankAccount account){
+void PrintBalance(const BankAccount account){
     cout << "Current balance: " << account.GetBalance() << endl;
 }

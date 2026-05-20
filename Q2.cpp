@@ -34,7 +34,7 @@ public:
     int getNumElements(string pFile) {
         m_File.open(pFile);
         if (!m_File.is_open()) {
-            throw string("Error: File not found while counting elements!"); // Q2: 找不到文件抛出异常
+            throw string("Error: File not found while counting elements!"); 
         }
         
         int count = 0;
@@ -89,8 +89,7 @@ public:
 };
 
 int main() {
-    cout << "Test program with Exception Handling!" << endl;
-    
+ 
     try {
         CPowerInfo pw;
         
@@ -105,6 +104,8 @@ int main() {
         cout << "\n The minimum power = " << minpower;
         cout << "\n The maximum power = " << maxpower;
         cout << "\n-----------------------------------" << endl;
+
+        cout << "==> Test program executed successfully with proper Exception Handling!" << endl;
         
     } catch (string errorMsg) {
         cout << "\n[EXCEPTION CAUGHT]: " << errorMsg << endl;

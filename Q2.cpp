@@ -1,115 +1,136 @@
 #include <iostream>
-#include <fstream>
 #include <string>
-#include <cmath>
 
 using namespace std;
 
-struct SPowerData {
-    float m_Amp;
-    float m_Res;
-    float m_Power;
-};
-
-class CPowerInfo {
-private:
-    SPowerData *m_power_array; 
-    int m_numElements; 
-    fstream m_File;
+class Employee {
+protected:
+    string employeeName;
+    string companyName;
+    string departmentName;
+    unsigned int employeeId;
+    double annualSalary;
 
 public:
-    CPowerInfo() {
-        m_power_array = nullptr;
-        m_numElements = 0;
+    Employee(string name, unsigned int id, double salary)
+        : employeeName(name), employeeId(id), annualSalary(salary), companyName(""), departmentName("") {}
+
+    virtual ~Employee() {}
+
+    void SetCompanyName(string compName) {
+        companyName = compName;
     }
 
-
-    ~CPowerInfo() {
-        if (m_power_array != nullptr) {
-            delete[] m_power_array;
-        }
+    void SetDepartmentName(string deptName) {
+        departmentName = deptName;
     }
 
-
-    int getNumElements(string pFile) {
-        m_File.open(pFile);
-        if (!m_File.is_open()) {
-            throw string("Error: File not found while counting elements!"); 
-        }
-        
-        int count = 0;
-        float temp1, temp2;
-
-        while (m_File >> temp1 >> temp2) {
-            count++;
-        }
-        m_File.close();
-        return count;
+    string GetEmployeeName() const {
+        return employeeName;
     }
 
-
-    void LoadData(string pFile, int numElements) {
-        m_numElements = numElements;
-
-        m_power_array = new SPowerData[m_numElements];
-
-        m_File.open(pFile);
-        if (!m_File.is_open()) {
-            throw string("Error: File not found while loading data!"); 
-        }
-
-        cout << "\nTotal elements: " << numElements << endl;
-        for (int i = 0; i < m_numElements; i++) {
-            m_File >> m_power_array[i].m_Amp >> m_power_array[i].m_Res;
-            
-            m_power_array[i].m_Power = pow(m_power_array[i].m_Amp, 2) * m_power_array[i].m_Res;
-            
-            cout << m_power_array[i].m_Amp << "\t" << m_power_array[i].m_Res 
-                 << "\t Calculated Power: " << m_power_array[i].m_Power << " W" << endl;
-        }
-        m_File.close();
+    unsigned int GetEmployeeId() const {
+        return employeeId;
     }
 
-    void FindMinMaxPower(float &outMinPower, float &outMaxPower) {
-        if (m_numElements == 0 || m_power_array == nullptr) return;
+    double GetAnnualSalary() const {
+        return annualSalary;
+    }
 
+    virtual double calculateBonus() = 0;
+};
 
-        outMinPower = m_power_array[0].m_Power;
-        outMaxPower = m_power_array[0].m_Power;
+class Manager : public Employee {
+private:
+    unsigned int numExecutives;
+    double calculatedBonus;    
 
-        for (int i = 1; i < m_numElements; i++) {
-            if (m_power_array[i].m_Power < outMinPower) {
-                outMinPower = m_power_array[i].m_Power;
-            }
-            if (m_power_array[i].m_Power > outMaxPower) {
-                outMaxPower = m_power_array[i].m_Power;
-            }
-        }
+public:
+    using Employee::Employee;
+
+    void setNumExecutives(unsigned int num) {
+        numExecutives = num;
+    }
+
+    virtual double calculateBonus() override {
+        calculatedBonus = annualSalary * (numExecutives * 0.15);
+        return calculatedBonus;
+    }
+};
+
+class Engineer : public Employee {
+private:
+    unsigned int numTechnicians; 
+    double calculatedBonus;     
+
+public:
+    using Employee::Employee;
+
+    virtual ~Engineer() override = default;
+
+    void setNumTechnicians(unsigned int num) {
+        numTechnicians = num;
+    }
+
+    virtual double calculateBonus() override {
+        calculatedBonus = annualSalary * (numTechnicians * 0.10);
+        return calculatedBonus;
     }
 };
 
 int main() {
- 
-    try {
-        CPowerInfo pw;
-        
-        int numElements = pw.getNumElements("AmpRes.txt"); 
-        
-        pw.LoadData("AmpRes.txt", numElements);
-        
-        float minpower, maxpower;
-        pw.FindMinMaxPower(minpower, maxpower);
-        
-        cout << "\n-----------------------------------";
-        cout << "\n The minimum power = " << minpower;
-        cout << "\n The maximum power = " << maxpower;
-        cout << "\n-----------------------------------" << endl;
+    string compName, deptName;
+    
+    cout << "Enter Company Name: ";
+    getline(cin, compName);
+    cout << "Enter Department Name: ";
+    getline(cin, deptName);
 
-        cout << "==> Test program executed successfully with proper Exception Handling!" << endl;
-        
-    } catch (string errorMsg) {
-        cout << "\n[EXCEPTION CAUGHT]: " << errorMsg << endl;
-    }
+    string mName;
+    unsigned int mId, mExecs;
+    double mSalary;
+    
+    cout << "\n--- Enter Manager Details ---" << endl;
+    cout << "Name: ";
+    getline(cin >> ws, mName);
+    cout << "ID: ";
+    cin >> mId;
+    cout << "Annual Salary: ";
+    cin >> mSalary;
+    cout << "Number of Executives supervised: ";
+    cin >> mExecs;
+
+    Manager mgr(mName, mId, mSalary);
+    mgr.SetCompanyName(compName);
+    mgr.SetDepartmentName(deptName);
+    mgr.setNumExecutives(mExecs);
+
+    string eName;
+    unsigned int eId, eTechs;
+    double eSalary;
+    
+    cout << "\n--- Enter Engineer Details ---" << endl;
+    cout << "Name: ";
+    getline(cin >> ws, eName);
+    cout << "ID: ";
+    cin >> eId;
+    cout << "Annual Salary: ";
+    cin >> eSalary;
+    cout << "Number of Technicians assigned: ";
+    cin >> eTechs;
+
+    Engineer eng(eName, eId, eSalary);
+    eng.SetCompanyName(compName);
+    eng.SetDepartmentName(deptName);
+    eng.setNumTechnicians(eTechs);
+
+    cout << "\n================ OUTPUT ================" << endl;
+    cout << "Manager: " << mgr.GetEmployeeName() << " (ID: " << mgr.GetEmployeeId() << ")" << endl;
+    cout << "Salary: $" << mgr.GetAnnualSalary()+mgr.calculateBonus() << endl;
+
+    cout << "\nEngineer: " << eng.GetEmployeeName() << " (ID: " << eng.GetEmployeeId() << ")" << endl;
+    cout << "Salary: $" << eng.GetAnnualSalary()+eng.calculateBonus() << endl;
+    cout << "========================================" << endl;
 
     return 0;
 }

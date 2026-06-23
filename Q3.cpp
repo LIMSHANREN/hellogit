@@ -1,146 +1,61 @@
 #include <iostream>
-#include <fstream>
 #include <string>
 
 using namespace std;
 
-class Employee {
+class Person {
 private:
     string name;
-    double salary;
+    string address;
 
 public:
-    Employee() {
-        name = "";
-        salary = 0.0;
-    }
-
-    Employee(string name, double a_salary) {
-        this->name = name;
-        this->salary = a_salary;
-    }
-
-    string getName() { return name; }
-    void setName(string a_name) { name = a_name; }
+    Person(string name, string address) : name(name), address(address) {}
     
-    double getSalary() { return salary; }
-    void setSalary(double a_salary) { salary = a_salary; }
+    string getName() const { return name; }
+    string getAddress() const { return address; }
+};
 
-    void displayStaffInformation() {
-        cout << "Staff Name: " << name << ", Salary: RM " << salary << endl;
-    }
+class Package {
+protected:
+    Person sender;       
+    Person recipient;   
+    double weight;       
+    double cost_per_kg;  
 
-    void incrementSalary(float rate) {
-        if (salary < 2000.0) {
-            salary = salary * (1.0 + rate);
-            cout << "Increment successful for " << name << "." << endl;
-        } else {
-            cout << "Message: " << name << " is not qualified for increment (Salary is already RM2000 or above)." << endl;
-        }
+public:
+    Package(Person s, Person r, double w, double c) 
+        : sender(s), recipient(r), weight((w > 0.0) ? w : 0.0), cost_per_kg((c > 0.0) ? c : 0.0) {}
+
+    virtual ~Package() {}
+
+    virtual double calculateCost() const {
+        return weight * cost_per_kg;
     }
 };
 
-class Company {
+class TwoDayPackage : public Package {
 private:
-    int numberOfStaff;
-    Employee* staffList;
+    double flat_fee;   
 
 public:
-    Company() {
-        numberOfStaff = 0;
-        staffList = nullptr;
-    }
+    TwoDayPackage(Person s, Person r, double w, double c, double fee)
+        : Package(s, r, w, c), flat_fee((fee > 0.0) ? fee : 0.0) {}
 
-    ~Company() {
-        if (staffList != nullptr) {
-            delete[] staffList;
-        }
-    }
-
-    void getDataFromFile(string filename) {
-        fstream file(filename);
-        if (!file.is_open()) {
-            cout << "Error opening " << filename << endl;
-            return;
-        }
-
-        string str;
-        int num = 0;
-        while (getline(file, str)) {
-            if (!str.empty()) { 
-                num++;
-            }
-        }
-        numberOfStaff = num;
-
-        staffList = new Employee[numberOfStaff];
-
-        file.clear();              
-        file.seekg(0, ios::beg);     
-
-        int index = 0;
-        while (getline(file, str) && index < numberOfStaff) {
-            if (!str.empty()) {
-                staffList[index].setName(str);
-                index++;
-            }
-        }
-        
-        cout << "\nNumber of staff loaded = " << numberOfStaff << endl;
-        file.close();
-    }
-
-    void getSalaryFromFile(string filename) {
-        fstream file(filename);
-        if (!file.is_open()) {
-            cout << "Error opening " << filename << endl;
-            return;
-        }
-
-        string str;
-        double salaryValue;
-
-        for (int i = 0; i < numberOfStaff; i++) {
-            if (getline(file, str)) {
-                salaryValue = stof(str); 
-                staffList[i].setSalary(salaryValue);
-
-                staffList[i].displayStaffInformation();
-            }
-        }
-        file.close();
-    }
-
-    void showAllStaff() {
-        cout << "\n--- Displaying All Staff Names ---" << endl;
-        for (int i = 0; i < numberOfStaff; i++) {
-            cout << i + 1 << ". " << staffList[i].getName() << endl;
-        }
-        cout << "Total Number of Staff: " << numberOfStaff << endl;
+    virtual double calculateCost() const override {
+        return Package::calculateCost() + flat_fee; 
     }
 };
 
 int main() {
-    cout << "=== Testing Employee Class ===" << endl;
-    Employee e1("Nurazlan", 1800);
-    e1.displayStaffInformation();
-    e1.incrementSalary(0.20);
-    cout << "After salary increment:" << endl;
-    e1.displayStaffInformation();
+    Package pkg1(Person("Ali", "Jalan 123"), Person("Lim", "Cyberjaya"), 1.5, 50); 
+    cout << "\n The cost of package pkg1 = " << pkg1.calculateCost(); 
+    cout << endl; 
+
+    TwoDayPackage pkg2(Person("Ali", "Jalan 123"), Person("Lim", "Cyberjaya"), 1.5, 50, 10);
+    cout << "\n The cost of package pkg2 = " << pkg2.calculateCost(); 
+    cout << endl; 
+
+    system("pause"); 
     
-    cout << endl;
-    Employee e2("Donald James", 3500);
-    e2.incrementSalary(0.20); 
-    
-    cout << "\n=== Testing Company Class (File I/O) ===" << endl;
-    Company astro;
-    
-    cout << "Reading staff name from text file...";
-    astro.getDataFromFile("staff.txt");
-    astro.showAllStaff();
-    
-    cout << "\nReading salary from text file & displaying information:" << endl;
-    astro.getSalaryFromFile("salary.txt");
-    
-    return 0;
+    return 1; 
 }

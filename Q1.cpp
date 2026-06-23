@@ -1,109 +1,41 @@
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <cmath>
-
 using namespace std;
 
-struct SPowerData {
-    float m_Amp;
-    float m_Res;
-    float m_Power;
-};
-
-class CPowerInfo {
-private:
-    SPowerData *m_power_array; 
-    int m_numElements; 
-    fstream m_File;
+class Shape {
+protected:
+    string nameOfShape;
+    double width, height;
 
 public:
-    CPowerInfo() {
-        m_power_array = nullptr;
-        m_numElements = 0;
-    }
+    Shape(string name, double width, double height) 
+        : nameOfShape(name), width(width), height(height) {}
 
+    virtual ~Shape() {}
 
-    ~CPowerInfo() {
-        if (m_power_array != nullptr) {
-            delete[] m_power_array;
-        }
-    }
-
-
-    int getNumElements(string pFile) {
-        m_File.open(pFile);
-        if (!m_File.is_open()) {
-            cout << "Error: File not found while counting elements!" << endl;
-            return 0;
-        }
-        
-        int count = 0;
-        float temp1, temp2;
-
-        while (m_File >> temp1 >> temp2) {
-            count++;
-        }
-        m_File.close();
-        return count;
-    }
-
-
-    void LoadData(string pFile, int numElements) {
-        m_numElements = numElements;
-
-        m_power_array = new SPowerData[m_numElements];
-
-        m_File.open(pFile);
-        if (!m_File.is_open()) {
-            cout << "Error: File not found while loading data!" << endl;
-            return;
-        }
-
-        cout << "\nTotal elements: " << numElements << endl;
-        for (int i = 0; i < m_numElements; i++) {
-            m_File >> m_power_array[i].m_Amp >> m_power_array[i].m_Res;
-            
-            m_power_array[i].m_Power = pow(m_power_array[i].m_Amp, 2) * m_power_array[i].m_Res;
-            
-            cout << m_power_array[i].m_Amp << "\t" << m_power_array[i].m_Res 
-                 << "\t Calculated Power: " << m_power_array[i].m_Power << " W" << endl;
-        }
-        m_File.close();
-    }
-
-    void FindMinMaxPower(float &outMinPower, float &outMaxPower) {
-        if (m_numElements == 0 || m_power_array == nullptr) return;
-
-
-        outMinPower = m_power_array[0].m_Power;
-        outMaxPower = m_power_array[0].m_Power;
-
-        for (int i = 1; i < m_numElements; i++) {
-            if (m_power_array[i].m_Power < outMinPower) {
-                outMinPower = m_power_array[i].m_Power;
-            }
-            if (m_power_array[i].m_Power > outMaxPower) {
-                outMaxPower = m_power_array[i].m_Power;
-            }
-        }
-    }
+    string getName() { return nameOfShape; }
+    
+    virtual double getArea() = 0; 
 };
 
-int main() {    
-    CPowerInfo pw;
-        
-    int numElements = pw.getNumElements("AmpRes.txt"); 
-        
-    pw.LoadData("AmpRes.txt", numElements);
-        
-    float minpower, maxpower;
-    pw.FindMinMaxPower(minpower, maxpower);
-        
-    cout << "\n-----------------------------------";
-    cout << "\n The minimum power = " << minpower;
-    cout << "\n The maximum power = " << maxpower;
-    cout << "\n-----------------------------------" << endl;
+class Rectangle : public Shape {
+public:
+    using Shape::Shape;
+    virtual double getArea() override { return width * height; }
+};
 
-    return 0;
+class Triangle : public Shape {
+public:
+    using Shape::Shape; 
+
+    virtual double getArea() override { return 0.5 * width * height; }
+};
+
+int main() {
+    Rectangle r1("My rectangle", 2.0, 4.0);
+    Triangle t1("My triangle", 2.0, 4.0);
+
+    cout << r1.getName() << " area = " << r1.getArea() << endl; 
+    cout << t1.getName() << " area = " << t1.getArea() << endl;
+
+    return 1;
 }
